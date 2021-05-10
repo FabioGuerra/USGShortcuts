@@ -139,7 +139,8 @@ class Janela:
        # print(f"{selected_tuple[0]}")
 
     def delete(self):
-        id = selected_tuple[0]
+        id = str(selected_tuple).split()
+        id = id[0].replace(".", "")
         self.db.delete(int(id))
         self.ver_siglas()
 
