@@ -66,6 +66,9 @@ class Janela:
         self.btn_salvar = Button(tab_add_siglas, text="Salvar", state='disabled', command=self.salvar)
         self.btn_salvar.place(x=75, y=100)
 
+        self.btn_cancelar = Button(tab_add_siglas, text="Cancelar", state='disabled', command=self.cancelar)
+        self.btn_cancelar.place(x=150, y= 100)
+
         self.view_siglas = Listbox(tab_add_siglas)
         self.view_siglas.place(x=5, y=150, width=666, height=417)
         self.view_siglas.bind('<<ListboxSelect>>', self.get_selected_row)
@@ -88,7 +91,7 @@ class Janela:
         conteudo = str(pyperclip.paste())
         self.previewBox.config(state=tkinter.NORMAL)
         self.previewBox.delete('1.0', END)
-        dic = dicionario_de_siglas.dicio_siglas
+        dic = dicionario_de_siglas.siglas()
 
         for key, value in dic.items():
 
@@ -103,8 +106,18 @@ class Janela:
         self.e_sigla.focus()
         self.e_sigla.insert(0, "#")
         self.e_texto.config(state=tkinter.NORMAL)
+        self.btn_cancelar.config(state=tkinter.NORMAL)
         self.btn_nova.config(state=DISABLED)
         self.btn_salvar.config(state=tkinter.NORMAL)
+
+    def cancelar(self):
+        self.e_texto.delete(0, END)
+        self.e_texto.config(state=DISABLED)
+        self.e_sigla.delete(0, END)
+        self.e_sigla.config(state=DISABLED)
+        self.btn_nova.config(state=tkinter.NORMAL)
+        self.btn_salvar.config(state=DISABLED)  
+        self.btn_cancelar.config(state=DISABLED)     
 
     def salvar(self):
         if len(self.e_sigla.get()) == 1 or self.e_sigla.get()[0] != "#":
@@ -120,6 +133,7 @@ class Janela:
             self.e_texto.delete(0, END)
             self.e_texto.config(state=DISABLED)
             self.btn_salvar.config(state=DISABLED)
+            self.btn_cancelar.columnconfigure(state=DISABLED)
             self.ver_siglas()
 
     def ver_siglas(self):
@@ -135,12 +149,14 @@ class Janela:
         global selected_tuple
         index = self.view_siglas.curselection()[0]
         selected_tuple = self.view_siglas.get(index)
-
-       # print(f"{selected_tuple[0]}")
+        
+        print(f"{selected_tuple}")
 
     def delete(self):
+        #id = selected_tuple[0]
         id = str(selected_tuple).split()
         id = id[0].replace(".", "")
+        
         self.db.delete(int(id))
         self.ver_siglas()
 
